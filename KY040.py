@@ -19,51 +19,69 @@ class KY040:
         self.switchCallback = switchCallback
 
         #setup pins
-        GPIO.setup(clockPin, GPIO.IN)
-        GPIO.setup(dataPin, GPIO.IN)
+        GPIO.setup(clockPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(dataPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(switchPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     def start(self):
-        GPIO.add_event_detect(self.clockPin, GPIO.FALLING, callback=self._clockCallback, bouncetime=250)
-        GPIO.add_event_detect(self.switchPin, GPIO.FALLING, callback=self._switchCallback, bouncetime=300)
+        GPIO.add_event_detect(self.clockPin, GPIO.FALLING, callback=self._clockCallback, bouncetime=12)
+        GPIO.add_event_detect(self.switchPin, GPIO.FALLING, callback=self.switchCallback, bouncetime=12)
 
     def stop(self):
         GPIO.remove_event_detect(self.clockPin)
         GPIO.remove_event_detect(self.switchPin)
     
     def _clockCallback(self, pin):
+        """
         if GPIO.input(self.clockPin) == 0:
             data = GPIO.input(self.dataPin)
             if data == 1:
                 self.rotaryCallback(self.ANTICLOCKWISE)
             else:
                 self.rotaryCallback(self.CLOCKWISE)
+        """
+        self.rotaryCallback(GPIO.input(self.dataPin))
 
     def _switchCallback(self, pin):
+        """
         if GPIO.input(self.switchPin) == 0:
             self.switchCallback()
+        """
+        self.switchCallback()
 
 #test
 if __name__ == "__main__":
-    
-    CLOCKPIN = 5
-    DATAPIN = 6
-    SWITCHPIN = 13
+
+    print 'Program start.'
+
+    CLOCKPIN = 27
+    DATAPIN = 22
+    SWITCHPIN = 17
 
     def rotaryChange(direction):
         print "turned - " + str(direction)
-    def switchPressed():
-        print "button pressed"
+    def switchPressed(pin):
+        print "button connected to pin:{} pressed".format(pin)
 
     GPIO.setmode(GPIO.BCM)
     
     ky040 = KY040(CLOCKPIN, DATAPIN, SWITCHPIN, rotaryChange, switchPressed)
 
+    print 'Launch switch monitor class.'
+
     ky040.start()
 
+    print 'Start program loop...'
     try:
         while True:
-            sleep(0.1)
+            sleep(10)
+            print 'Ten seconds...'
     finally:
+        print 'Stopping GPIO monitoring...'
+
         ky040.stop()
+
         GPIO.cleanup()
+
+        print 'Program ended.'
+
