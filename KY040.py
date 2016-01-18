@@ -14,7 +14,7 @@ class KY040:
 
     #CLOCKWISE = 0
     #ANTICLOCKWISE = 1
-    DEBOUNCE = 12
+    GLOBAL DEBOUNCE = 12
 
     def __init__(self, clockPin, dataPin, switchPin, rotaryCallback, switchCallback):
         #persist values
