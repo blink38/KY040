@@ -10,12 +10,12 @@ Additional code added by Conrad Storz 2015 and 2016
 import RPi.GPIO as GPIO
 from time import sleep
 
-DEBOUNCE = 50
 
 class KY040:
 
-    #CLOCKWISE = 0
-    #ANTICLOCKWISE = 1
+    CLOCKWISE = 0
+    ANTICLOCKWISE = 1
+    DEBOUNCE = 12
 
     def __init__(self, clockPin, dataPin, switchPin, rotaryCallback, switchCallback):
         #persist values
@@ -31,15 +31,14 @@ class KY040:
         GPIO.setup(switchPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     def start(self):
-        GPIO.add_event_detect(self.clockPin, GPIO.FALLING, callback=self._clockCallback, bouncetime=DEBOUNCE)
-        GPIO.add_event_detect(self.switchPin, GPIO.FALLING, callback=self.switchCallback, bouncetime=DEBOUNCE)
+        GPIO.add_event_detect(self.clockPin, GPIO.FALLING, callback=self._clockCallback, bouncetime=self.DEBOUNCE)
+        GPIO.add_event_detect(self.switchPin, GPIO.FALLING, callback=self.switchCallback, bouncetime=self.DEBOUNCE)
 
     def stop(self):
         GPIO.remove_event_detect(self.clockPin)
         GPIO.remove_event_detect(self.switchPin)
     
     def _clockCallback(self, pin):
-        """
         if GPIO.input(self.clockPin) == 0:
             data = GPIO.input(self.dataPin)
             if data == 1:
@@ -48,7 +47,8 @@ class KY040:
                 self.rotaryCallback(self.CLOCKWISE)
         """
         self.rotaryCallback(GPIO.input(self.dataPin))
-
+        """
+        
     def _switchCallback(self, pin):
         """
         if GPIO.input(self.switchPin) == 0:
