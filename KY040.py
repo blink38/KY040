@@ -10,7 +10,7 @@ Additional code added by Conrad Storz 2015 and 2016
 import RPi.GPIO as GPIO
 from time import sleep
 
-DEBOUNCE = 12
+DEBOUNCE = 19
 
 class KY040:
 
