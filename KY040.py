@@ -10,14 +10,13 @@ Additional code added by Conrad Storz 2015 and 2016
 import RPi.GPIO as GPIO
 from time import sleep
 
+DEBOUNCE = 12
+
 class KY040:
 
     #CLOCKWISE = 0
     #ANTICLOCKWISE = 1
 
-    DEBOUNCE = 12
-    GLOBAL DEBOUNCE 
-    
     def __init__(self, clockPin, dataPin, switchPin, rotaryCallback, switchCallback):
         #persist values
         self.clockPin = clockPin
