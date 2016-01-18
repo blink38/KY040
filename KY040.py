@@ -40,15 +40,17 @@ class KY040:
     
     def _clockCallback(self, pin):
         if GPIO.input(self.clockPin) == 0:
+            self.rotaryCallback(GPIO.input(self.dataPin))
+        """
             data = GPIO.input(self.dataPin)
             if data == 1:
                 self.rotaryCallback(self.ANTICLOCKWISE)
             else:
                 self.rotaryCallback(self.CLOCKWISE)
-        """
+        
         self.rotaryCallback(GPIO.input(self.dataPin))
         """
-        
+
     def _switchCallback(self, pin):
         """
         if GPIO.input(self.switchPin) == 0:
