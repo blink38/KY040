@@ -1,15 +1,21 @@
-#KY040 Python Class
-#Martin O'Hanlon
-#stuffaboutcode.com
+"""
+KY040 Python Class
+Martin O'Hanlon
+stuffaboutcode.com
+
+
+Additional code added by Conrad Storz 2015 and 2016
+"""
 
 import RPi.GPIO as GPIO
 from time import sleep
 
 class KY040:
 
-    CLOCKWISE = 0
-    ANTICLOCKWISE = 1
-    
+    #CLOCKWISE = 0
+    #ANTICLOCKWISE = 1
+    DEBOUNCE = 12
+
     def __init__(self, clockPin, dataPin, switchPin, rotaryCallback, switchCallback):
         #persist values
         self.clockPin = clockPin
@@ -24,8 +30,8 @@ class KY040:
         GPIO.setup(switchPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     def start(self):
-        GPIO.add_event_detect(self.clockPin, GPIO.FALLING, callback=self._clockCallback, bouncetime=12)
-        GPIO.add_event_detect(self.switchPin, GPIO.FALLING, callback=self.switchCallback, bouncetime=12)
+        GPIO.add_event_detect(self.clockPin, GPIO.FALLING, callback=self._clockCallback, bouncetime=DEBOUNCE)
+        GPIO.add_event_detect(self.switchPin, GPIO.FALLING, callback=self.switchCallback, bouncetime=DEBOUNCE)
 
     def stop(self):
         GPIO.remove_event_detect(self.clockPin)
@@ -64,13 +70,11 @@ if __name__ == "__main__":
         print "button connected to pin:{} pressed".format(pin)
 
     GPIO.setmode(GPIO.BCM)
-    
     ky040 = KY040(CLOCKPIN, DATAPIN, SWITCHPIN, rotaryChange, switchPressed)
 
     print 'Launch switch monitor class.'
 
     ky040.start()
-
     print 'Start program loop...'
     try:
         while True:
@@ -78,10 +82,7 @@ if __name__ == "__main__":
             print 'Ten seconds...'
     finally:
         print 'Stopping GPIO monitoring...'
-
         ky040.stop()
-
         GPIO.cleanup()
-
         print 'Program ended.'
 
